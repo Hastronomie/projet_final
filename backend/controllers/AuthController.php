@@ -7,12 +7,9 @@ use models\User;
 
 class AuthController
 {
-    /**
-     * @throws \JsonException
-     */
     public function login(): void
     {
-        $rawInput = file_get_contents('php://input');
+        $rawInput    = file_get_contents('php://input');
         $credentials = json_decode($rawInput, true, 512, JSON_THROW_ON_ERROR);
 
         if (empty($credentials['email']) || empty($credentials['password'])) {
@@ -21,14 +18,14 @@ class AuthController
             exit();
         }
 
-        $email = $credentials['email'];
-        $clearPassword = $credentials['password'];
-
         $userManager = new UserManager();
-        $user = $userManager->findByEmail($email);
+        $user        = $userManager->findByEmail($credentials['email']);
 
-        if ($user !== null && password_verify($clearPassword, $user->getPassword())) {
-            $token = base64_encode(json_encode(['user_id' => $user->getId(), 'email' => $user->getEmail()], JSON_THROW_ON_ERROR));
+        if ($user !== null && password_verify($credentials['password'], $user->getPassword())) {
+            $token = base64_encode(json_encode([
+                'user_id' => $user->getId(),
+                'email'   => $user->getEmail()
+            ], JSON_THROW_ON_ERROR));
 
             http_response_code(200);
             echo json_encode(["token" => $token], JSON_THROW_ON_ERROR);
@@ -43,7 +40,7 @@ class AuthController
     public function register(): void
     {
         try {
-            $rawInput = file_get_contents('php://input');
+            $rawInput    = file_get_contents('php://input');
             $credentials = json_decode($rawInput, true, 512, JSON_THROW_ON_ERROR);
 
             if ($credentials === null) {
@@ -53,37 +50,24 @@ class AuthController
             }
 
             $missingFields = [];
-            $requiredKeys = ['email', 'password', 'confirmPassword', 'username', 'pronoun'];
-
-            foreach ($requiredKeys as $key) {
-                if (empty($credentials[$key])) {
-                    $missingFields[] = $key;
-                }
+            foreach (['email', 'password', 'confirmPassword', 'username', 'pronoun'] as $key) {
+                if (empty($credentials[$key])) $missingFields[] = $key;
             }
 
             if (!empty($missingFields)) {
                 http_response_code(400);
-                echo json_encode([
-                    "error" => "All fields are required.",
-                    "missing_keys" => $missingFields
-                ], JSON_THROW_ON_ERROR);
+                echo json_encode(["error" => "All fields are required.", "missing_keys" => $missingFields], JSON_THROW_ON_ERROR);
                 exit();
             }
 
-            $email = $credentials['email'];
-            $clearPassword = $credentials['password'];
-            $confirmPassword = $credentials['confirmPassword'];
-            $name = $credentials['username'];
-            $pronoun = $credentials['pronoun'];
-
-            if ($clearPassword !== $confirmPassword) {
+            if ($credentials['password'] !== $credentials['confirmPassword']) {
                 http_response_code(400);
                 echo json_encode(["error" => "Passwords do not match."], JSON_THROW_ON_ERROR);
                 exit();
             }
 
-            $userManager = new \manager\UserManager();
-            $existingUser = $userManager->findByEmail($email);
+            $userManager  = new UserManager();
+            $existingUser = $userManager->findByEmail($credentials['email']);
 
             if ($existingUser !== null) {
                 http_response_code(409);
@@ -91,39 +75,33 @@ class AuthController
                 exit();
             }
 
-            $hashedPassword = password_hash($clearPassword, PASSWORD_DEFAULT);
-
-            $user = new User(null, $name, $pronoun, $email, $hashedPassword);
-
-            if ($user->getPassword() === null || $user->getPassword() === '') {
-                http_response_code(500);
-                echo json_encode([
-                    "error" => "CRASH INTERCEPTED: Memory loss inside User entity.",
-                    "hashed_password_state" => $hashedPassword,
-                    "user_object_dump" => [
-                        "id" => $user->getId(),
-                        "name" => $user->getName(),
-                        "pronoun" => $user->getPronoun(),
-                        "email" => $user->getEmail(),
-                        "password" => $user->getPassword()
-                    ]
-                ], JSON_THROW_ON_ERROR);
-                exit();
-            }
+            $user = new User(
+                null,
+                $credentials['username'],
+                $credentials['pronoun'],
+                $credentials['email'],
+                password_hash($credentials['password'], PASSWORD_DEFAULT)
+            );
 
             $userManager->create($user);
 
-            $token = base64_encode(json_encode(['email' => $email], JSON_THROW_ON_ERROR));
+            $createdUser = $userManager->findByEmail($credentials['email']);
+
+            $token = base64_encode(json_encode([
+                'user_id' => $createdUser->getId(),
+                'email'   => $credentials['email']
+            ], JSON_THROW_ON_ERROR));
 
             http_response_code(201);
             echo json_encode(["token" => $token], JSON_THROW_ON_ERROR);
             exit();
-        } catch (\Throwable $systemError) {
+
+        } catch (\Throwable $e) {
             http_response_code(500);
             echo json_encode([
-                "error" => "PHP FATAL CRASH: " . $systemError->getMessage(),
-                "file" => $systemError->getFile(),
-                "line" => $systemError->getLine()
+                "error" => "PHP FATAL CRASH: " . $e->getMessage(),
+                "file"  => $e->getFile(),
+                "line"  => $e->getLine()
             ], JSON_THROW_ON_ERROR);
             exit();
         }

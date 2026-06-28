@@ -1,6 +1,10 @@
+Bonjour, je tiens à m'excuser si je n'ai pas finis le projet, par manque de 
+temps dut à mes 25h/semaines en restauration. J'ai tout de même fait de mon 
+mieux
+
 Pour que le site marche il faut
 -ouvrir via Xamp une instance d'Apache et Mysql
--sur un terminal ouvrir le serveur cêté backend en se positionnant dans le
+-sur un terminal ouvrir le serveur côté backend en se positionnant dans le
 dossier du backend en entier puis dans public, taper la commande `php -S localhost:8000 index.php`
 -de même pour le frontend avec la commande `php -S localhost:3000` dans le
 dossier dédié.
