@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 28 juin 2026 à 01:18
+-- Généré le : lun. 29 juin 2026 à 00:03
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -40,9 +40,9 @@ CREATE TABLE `album` (
 --
 
 INSERT INTO `album` (`id`, `name`, `created_at`, `visibility`, `description`) VALUES
-(10, 'kj', '0000-00-00', 'public', 'dfghjcxqedqedgc45555'),
+(10, 'kj', '0000-00-00', 'public', 'Je suis une super description !'),
 (13, 'teste avec rr', '0000-00-00', 'public', NULL),
-(14, 'test', '0000-00-00', 'private', NULL);
+(15, 'Je suis un album', '0000-00-00', 'public', 'Et moi une description !');
 
 -- --------------------------------------------------------
 
@@ -60,7 +60,8 @@ CREATE TABLE `album_photo` (
 --
 
 INSERT INTO `album_photo` (`album_id`, `photo_id`) VALUES
-(10, 10);
+(10, 10),
+(15, 13);
 
 -- --------------------------------------------------------
 
@@ -78,7 +79,8 @@ CREATE TABLE `comment` (
 --
 
 INSERT INTO `comment` (`id`, `content`) VALUES
-(4, 'Je suis le premier commentaire !');
+(4, 'Je suis le premier commentaire !'),
+(5, 'Commentaire trop cool');
 
 -- --------------------------------------------------------
 
@@ -96,7 +98,8 @@ CREATE TABLE `comment_user` (
 --
 
 INSERT INTO `comment_user` (`comment_id`, `user_id`) VALUES
-(4, 4);
+(4, 4),
+(5, 4);
 
 -- --------------------------------------------------------
 
@@ -119,7 +122,8 @@ CREATE TABLE `photo` (
 INSERT INTO `photo` (`id`, `file_path`, `alt`, `date`, `caption`) VALUES
 (1, '', '/uploads/img_6a352bd4aa95f2.86727577.jpg', '2026-06-19', ''),
 (2, '', '/uploads/img_6a38fac30853e0.12104383.jpg', '2026-06-22', ''),
-(10, '', '/uploads/img_6a3e4bac3bcdd9.29299567.png', '2026-06-26', '');
+(10, '', '/uploads/img_6a3e4bac3bcdd9.29299567.png', '2026-06-26', ''),
+(13, '', '/uploads/img_6a405e7f1bf270.59634487.png', '2026-06-28', '');
 
 -- --------------------------------------------------------
 
@@ -138,7 +142,8 @@ CREATE TABLE `photo_comment` (
 
 INSERT INTO `photo_comment` (`photo_id`, `comment_id`) VALUES
 (10, 0),
-(10, 4);
+(10, 4),
+(13, 5);
 
 -- --------------------------------------------------------
 
@@ -185,7 +190,13 @@ INSERT INTO `user` (`id`, `name`, `profile_picture`, `pronoun`, `email`, `passwo
 (1, 'ff', NULL, 'il', 'ff.ff@ff.ff', '$2y$10$/nT/TMCEjA7Y3m6/QN2yIOw/bcylkHqNZ1KwdJo4VlezcsJvUjQ/O'),
 (2, 'kk', NULL, 'elle', 'kk.kk@kk.kk', '$2y$10$BCYBkjlAd/QloIChg.XlwOqECN42.FkouzBwZjezhLWb9Y8GFxUB.'),
 (3, 'jj', NULL, 'il', 'jj.jj@jj.jj', '$2y$10$EFiBujKFZQpTCnEls.udveTgLHZZCZO9gi5KRYsVgqQBk6GuFQn8G'),
-(4, 'rr', NULL, 'il', 'rr.rr@rr.rr', '$2y$10$Hd05/R/8WIrkmo6Lj7A5wuAqKAIT43yVxhLEkVmqxRJrMvYc15oFW');
+(4, 'rr', NULL, 'il', 'rr.rr@rr.rr', '$2y$10$Hd05/R/8WIrkmo6Lj7A5wuAqKAIT43yVxhLEkVmqxRJrMvYc15oFW'),
+(5, 'aa', NULL, 'elle', 'aa.aa@aa.aa', '$2y$10$pIDuAoHrks/0T3oTDlxxxucl6y5UAgWRHapUkwQcMUBv1YK7zbduG'),
+(6, 'aa', NULL, 'elle', 'aab.aa@aa.aa', '$2y$10$lEah04IaT9xSMZZVIaahre7kIb7N2N6dM8lgZ/qf3ENRB0eMtD9Eq'),
+(7, 'bb', NULL, 'elle', 'bb.bb@bb.bb', '$2y$10$UnSUO.MNvMh/bUS9kZQYXe/lZsA3IScnxY3qvAkOKyVIO2EBob7hG'),
+(8, 'd', NULL, 's', 'sz.szs@ss.ss', '$2y$10$Os0IcLIJfAwlHs3cFgUxNugUmU0ar5l6FSeyfzfK8EMCCWSDnzu8O'),
+(9, 'gg', NULL, 'il', 'gg.gg@gg.gg', '$2y$10$qLTt2Ox5E3.wV4qwt1.fD.RUWZzvTS1sf2Gu0/pehlBBeJ8IunpGS'),
+(10, 'zz', NULL, 'il', 'zz.zz@zz.zz', '$2y$10$95paSk.LoAEkh6w8L9esEuh2jMIgImxGXnvRSxpjdhLOP65PgdOtS');
 
 -- --------------------------------------------------------
 
@@ -209,7 +220,8 @@ INSERT INTO `user_album` (`user_id`, `album_id`, `permission`) VALUES
 (2, 13, 10),
 (4, 13, 5),
 (2, 10, 1),
-(1, 14, 10);
+(4, 15, 10),
+(3, 15, 5);
 
 -- --------------------------------------------------------
 
@@ -317,25 +329,25 @@ ALTER TABLE `user_friend`
 -- AUTO_INCREMENT pour la table `album`
 --
 ALTER TABLE `album`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT pour la table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Contraintes pour les tables déchargées
