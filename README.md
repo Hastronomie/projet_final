@@ -1,3 +1,5 @@
+(à mettre en vision code sinon la mise en page est casssée)
+
 Pour que le site marche il faut
 -ouvrir via Xamp une instance d'Apache et Mysql
 -sur un terminal ouvrir le serveur cêté backend en se positionnant dans le
